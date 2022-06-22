@@ -1,0 +1,13 @@
+# Editors
+.vscode/
+# Trash
+.DS_Store
+Thumbs.db
+# k8s
+kubeconfig
+kubeconfig.yaml
+# vscode-sops
+.decrypted~*.yaml
+# gitguardian
+.envrc
+.cache_ggshield
