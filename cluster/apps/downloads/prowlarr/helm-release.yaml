@@ -29,7 +29,7 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/icon: "cloud-search"
         hosts:
-          - host: &host "prowlarr.${SECRET_INTERNAL_DOMAIN}"
+          - host: &host prowlarr.${SECRET_INTERNAL_DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
@@ -50,8 +50,8 @@ spec:
         type: custom
         volumeSpec:
           nfs:
-            server: "${SECRET_BACKUP_SERVER}"
-            path: /backup/data/app/prowlarr
+            server: ${SECRET_BACKUP_SERVER}
+            path: ${SECRET_BACKUP_FOLDER}/prowlarr
         mountPath: /config/Backups
         readOnly: false
     resources:
