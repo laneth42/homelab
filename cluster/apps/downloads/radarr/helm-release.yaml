@@ -28,7 +28,7 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/icon: "cloud-search"
         hosts:
-          - host: &host "radarr.${SECRET_INTERNAL_DOMAIN}"
+          - host: &host radarr.${SECRET_INTERNAL_DOMAIN}
             paths:
               - path: /
         tls:
@@ -63,7 +63,7 @@ spec:
         type: custom
         volumeSpec:
           nfs:
-            server: "${SECRET_MEDIA_SERVER}"
+            server: ${SECRET_MEDIA_SERVER}
             path: /media
         mountPath: /media
       backup:
@@ -71,8 +71,8 @@ spec:
         type: custom
         volumeSpec:
           nfs:
-            server: "${SECRET_BACKUP_SERVER}"
-            path: /backup/data/app/radarr
+            server: ${SECRET_BACKUP_SERVER}
+            path: ${SECRET_BACKUP_FOLDER}/radarr
         mountPath: /config/Backups
         readOnly: false
     resources:
