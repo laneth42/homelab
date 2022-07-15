@@ -6,7 +6,8 @@ metadata:
   namespace: downloads
 spec:
   schedule: "0 3 * * *"
-  concurrencyPolicy: "Forbid"
+  # the gateway sidecar gets stuck, blocking future runs - this is a workaround.
+  concurrencyPolicy: Replace
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 5
   jobTemplate:
