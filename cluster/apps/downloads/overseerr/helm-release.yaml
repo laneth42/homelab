@@ -18,6 +18,9 @@ spec:
     image:
       repository: ghcr.io/sct/overseerr
       tag: 1.29.1
+    controller:
+      labels:
+        pmb.home.arpa/backup-claim: &claimName "overseerr-config-v3"
     env:
       TZ: ${CONFIG_TIMEZONE}
       LOG_LEVEL: "info"
@@ -54,7 +57,7 @@ spec:
     persistence:
       config:
         enabled: true
-        existingClaim: overseerr-config-v3
+        existingClaim: *claimName
         mountPath: /app/config
     resources:
       requests:
