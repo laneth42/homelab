@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: radarr-config-v3
+  name: radarr-config-v4
   namespace: downloads
   labels:
     app.kubernetes.io/instance: &name radarr
@@ -13,5 +13,5 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 15Gi
-  storageClassName: zfs-block
+      storage: 5Gi
+  storageClassName: ceph-block

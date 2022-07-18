@@ -20,7 +20,7 @@ spec:
       tag: 1.29.1
     controller:
       labels:
-        pmb.home.arpa/snapshot-claim: &claimName "overseerr-config-v3"
+        pmb.home.arpa/snapshot-claim: &claimName "overseerr-config-v4"
         setGateway: "true"
     env:
       TZ: ${CONFIG_TIMEZONE}
