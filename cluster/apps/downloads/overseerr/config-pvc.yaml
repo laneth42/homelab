@@ -4,6 +4,10 @@ kind: PersistentVolumeClaim
 metadata:
   name: overseerr-config-v3
   namespace: downloads
+  labels:
+    app.kubernetes.io/instance: &name overseerr
+    app.kubernetes.io/name: *name
+    pmb.home.arpa/snapshot: "true"
 spec:
   accessModes:
     - ReadWriteOnce
