@@ -4,6 +4,10 @@ kind: PersistentVolumeClaim
 metadata:
   name: sonarr-config-v3
   namespace: downloads
+  labels:
+    app.kubernetes.io/instance: &name sonarr
+    app.kubernetes.io/name: *name
+    pmb.home.arpa/snapshot: "true"
 spec:
   accessModes:
     - ReadWriteOnce
