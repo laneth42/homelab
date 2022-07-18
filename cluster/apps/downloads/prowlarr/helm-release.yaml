@@ -21,7 +21,7 @@ spec:
       tag: v0.4.3.1898
     controller:
       labels:
-        pmb.home.arpa/snapshot-claim: &claimName "prowlarr-config-v4"
+        pmb.home.arpa/snapshot-claim: &claimName "prowlarr-config-v5"
         setGateway: "true"
     env:
       TZ: ${CONFIG_TIMEZONE}

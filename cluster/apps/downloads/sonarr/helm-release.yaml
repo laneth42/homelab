@@ -20,7 +20,7 @@ spec:
       tag: v3.0.8.1507
     controller:
       labels:
-        pmb.home.arpa/snapshot-claim: &claimName "sonarr-config-v3"
+        pmb.home.arpa/snapshot-claim: &claimName "sonarr-config-v4"
         setGateway: "true"
     env:
       TZ: ${CONFIG_TIMEZONE}

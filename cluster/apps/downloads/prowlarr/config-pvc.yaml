@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: prowlarr-config-v4
+  name: prowlarr-config-v5
   namespace: downloads
   labels:
     app.kubernetes.io/instance: &name prowlarr
@@ -14,4 +14,4 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  storageClassName: zfs-block
+  storageClassName: ceph-block

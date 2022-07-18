@@ -20,7 +20,7 @@ spec:
       tag: v4.1.0.6175
     controller:
       labels:
-        pmb.home.arpa/snapshot-claim: &claimName "radarr-config-v3"
+        pmb.home.arpa/snapshot-claim: &claimName "radarr-config-v4"
         setGateway: "true"
     env:
       TZ: ${CONFIG_TIMEZONE}
