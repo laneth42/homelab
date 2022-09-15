@@ -11,7 +11,7 @@ metadata:
   name: hello-world
   namespace: default
 spec:
-  ingressClassName: traefik
+  ingressClassName: nginx
   rules:
     - host: &host hello.${SECRET_PUBLIC_DOMAIN}
       http:
