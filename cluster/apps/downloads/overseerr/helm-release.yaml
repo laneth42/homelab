@@ -23,7 +23,7 @@ spec:
         pmb.home.arpa/snapshot-claim: &claimName "overseerr-config-v4"
         setGateway: "true"
     env:
-      TZ: ${CONFIG_TIMEZONE}
+      TZ: ${TIMEZONE}
       LOG_LEVEL: "info"
     ingress:
       main:

@@ -23,7 +23,7 @@ spec:
         pmb.home.arpa/snapshot-claim: &claimName "sonarr-config-v4"
         setGateway: "true"
     env:
-      TZ: ${CONFIG_TIMEZONE}
+      TZ: ${TIMEZONE}
     ingress:
       main:
         enabled: true

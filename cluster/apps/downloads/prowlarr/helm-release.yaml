@@ -24,7 +24,7 @@ spec:
         pmb.home.arpa/snapshot-claim: &claimName "prowlarr-config-v5"
         setGateway: "true"
     env:
-      TZ: ${CONFIG_TIMEZONE}
+      TZ: ${TIMEZONE}
     ingress:
       main:
         enabled: true
