@@ -43,7 +43,7 @@ spec:
               imagePullPolicy: IfNotPresent
               env:
                 - name: TZ
-                  value: ${CONFIG_TIMEZONE}
+                  value: ${TIMEZONE}
                 - name: RECYCLARR_APP_DATA
                   value: /config
               command:
@@ -62,7 +62,7 @@ spec:
               imagePullPolicy: IfNotPresent
               env:
                 - name: TZ
-                  value: ${CONFIG_TIMEZONE}
+                  value: ${TIMEZONE}
                 - name: RECYCLARR_APP_DATA
                   value: /config
               command:
