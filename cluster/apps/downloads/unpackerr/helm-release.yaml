@@ -2,46 +2,62 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: unpackerr
+  name: &app unpackerr
   namespace: downloads
 spec:
   interval: 15m
   chart:
     spec:
-      chart: unpackerr
-      version: 5.4.2
+      chart: app-template
+      version: 0.2.1
       sourceRef:
         kind: HelmRepository
-        name: k8s-at-home
+        name: bjw-s
         namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
   values:
     image:
-      repository: docker.io/golift/unpackerr
-      tag: 0.10.0
+      repository: ghcr.io/onedr0p/unpackerr
+      tag: 0.10.1@sha256:758cb8e96e9972ecedbfb5c136dc5c75dd0cf0d7ae6131867f0d27611773e86c
     env:
       TZ: ${TIMEZONE}
       UN_SONARR_0_URL: http://sonarr:8989
+      UN_SONARR_0_PATHS_0: /media/requests/complete
       UN_RADARR_0_URL: http://radarr:7878
-
+      UN_RADARR_0_PATHS_0: /media/requests/complete
     envFrom:
       - secretRef:
-          name: unpackerr
-    podAnnotations:
-      secret.reloader.stakater.com/reload: unpackerr
-    securityContext:
+          name: *app
+    service:
+      main:
+        enabled: false
+    probes:
+      liveness:
+        enabled: false
+      readiness:
+        enabled: false
+      startup:
+        enabled: false
+    podSecurityContext:
       runAsUser: 2000
       runAsGroup: 2000
+      fsGroup: 2000
+      fsGroupChangePolicy: OnRootMismatch
     persistence:
-      config:
-        enabled: false
       complete:
         enabled: true
-        type: custom
-        volumeSpec:
-          nfs:
-            server: "${SECRET_MEDIA_SERVER}"
-            path: /media/requests/complete
+        type: nfs
+        server: "${SECRET_MEDIA_SERVER}"
+        path: /media/requests/complete
         mountPath: /media/requests/complete
+    podAnnotations:
+      secret.reloader.stakater.com/reload: unpackerr
     resources:
       requests:
         cpu: 100m
