@@ -8,23 +8,35 @@ spec:
   interval: 15m
   chart:
     spec:
-      chart: overseerr
-      version: 5.4.2
+      chart: app-template
+      version: 0.2.1
       sourceRef:
         kind: HelmRepository
-        name: k8s-at-home
+        name: bjw-s
         namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
   values:
     image:
       repository: ghcr.io/sct/overseerr
       tag: 1.30.0
     controller:
       labels:
-        pmb.home.arpa/snapshot-claim: &claimName "overseerr-config-v4"
         setGateway: "true"
     env:
       TZ: ${TIMEZONE}
       LOG_LEVEL: "info"
+      PORT: &port 80
+    service:
+      main:
+        ports:
+          http:
+            port: *port
     ingress:
       main:
         enabled: true
@@ -37,6 +49,7 @@ spec:
           - host: &host "requests.${SECRET_PUBLIC_DOMAIN}"
             paths:
               - path: /
+                pathType: Prefix
         tls:
           - hosts:
               - *host
@@ -51,16 +64,19 @@ spec:
         tls:
           - hosts:
               - *hosti
-    podAnnotations:
-      backup.velero.io/backup-volumes: config
+    podSecurityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+      fsGroupChangePolicy: OnRootMismatch
     persistence:
       config:
         enabled: true
-        existingClaim: *claimName
+        existingClaim: overseerr-config-v4
         mountPath: /app/config
     resources:
       requests:
-        memory: 250Mi
         cpu: 250m
+        memory: 250Mi
       limits:
-        memory: 750Mi
+        memory: 500Mi
