@@ -13,7 +13,7 @@ spec:
   jobTemplate:
     spec:
       backoffLimit: 3
-      ttlSecondsAfterFinished: 300
+      ttlSecondsAfterFinished: 86400
       template:
         metadata:
           labels:
@@ -22,8 +22,8 @@ spec:
           automountServiceAccountToken: false
           restartPolicy: OnFailure
           initContainers:
-            - name: render-config
-              image: ghcr.io/onedr0p/recyclarr:3.0.0@sha256:15ac3b69ea9fe66ab2b03f5f3daff36d188a6f2f81a894f64707079ef76989aa
+            - name: render-configs
+              image: ghcr.io/onedr0p/alpine:3.17.0
               envFrom:
                 - secretRef:
                     name: *app
@@ -31,48 +31,40 @@ spec:
                 - "/bin/bash"
                 - -c
               args:
-                - "envsubst < /config/recyclarr.yaml > /shared/recyclarr.yaml"
+                - "envsubst < /config/recyclarr.yml > /shared/recyclarr.yml"
               volumeMounts:
                 - name: config
                   mountPath: /config
                 - name: shared
                   mountPath: /shared
           containers:
-            - name: sonarr
-              image: ghcr.io/onedr0p/recyclarr:3.0.0@sha256:15ac3b69ea9fe66ab2b03f5f3daff36d188a6f2f81a894f64707079ef76989aa
+            - name: sonarrs
+              image: ghcr.io/recyclarr/recyclarr:3.0.0
               env:
                 - name: TZ
                   value: ${TIMEZONE}
-                - name: RECYCLARR_APP_DATA
-                  value: /config
               command:
-                - /app/recyclarr
+                - /app/recyclarr/recyclarr
               args:
                 - sonarr
-                - --config
-                - /config/recyclarr.yaml
               volumeMounts:
                 - name: shared
-                  mountPath: /config/recyclarr.yaml
-                  subPath: recyclarr.yaml
+                  mountPath: /config/recyclarr.yml
+                  subPath: recyclarr.yml
                   readOnly: true
-            - name: radarr
-              image: ghcr.io/onedr0p/recyclarr:3.0.0@sha256:15ac3b69ea9fe66ab2b03f5f3daff36d188a6f2f81a894f64707079ef76989aa
+            - name: radarrs
+              image: ghcr.io/recyclarr/recyclarr:3.0.0
               env:
                 - name: TZ
                   value: ${TIMEZONE}
-                - name: RECYCLARR_APP_DATA
-                  value: /config
               command:
-                - /app/recyclarr
+                - /app/recyclarr/recyclarr
               args:
                 - radarr
-                - --config
-                - /config/recyclarr.yaml
               volumeMounts:
                 - name: shared
-                  mountPath: /config/recyclarr.yaml
-                  subPath: recyclarr.yaml
+                  mountPath: /config/recyclarr.yml
+                  subPath: recyclarr.yml
                   readOnly: true
           volumes:
             - name: config
