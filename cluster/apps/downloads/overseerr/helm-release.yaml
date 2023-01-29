@@ -53,17 +53,6 @@ spec:
         tls:
           - hosts:
               - *host
-            secretName: tls.overseerr
-      internal:
-        enabled: true
-        ingressClassName: nginx
-        hosts:
-          - host: &hosti requests.${SECRET_INTERNAL_DOMAIN}
-            paths:
-              - path: /
-        tls:
-          - hosts:
-              - *hosti
     podSecurityContext:
       runAsUser: 1000
       runAsGroup: 1000
