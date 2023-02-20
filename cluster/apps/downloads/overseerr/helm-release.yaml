@@ -44,7 +44,7 @@ spec:
         annotations:
           external-dns.home.arpa/enabled: "true"
           hajimari.io/enable: "true"
-          hajimari.io/icon: "television-classic"
+          hajimari.io/icon: mdi:eye-circle
         hosts:
           - host: &host "requests.${SECRET_PUBLIC_DOMAIN}"
             paths:

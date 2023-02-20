@@ -44,7 +44,7 @@ spec:
         ingressClassName: nginx
         annotations:
           hajimari.io/enable: "true"
-          hajimari.io/icon: "cloud-search"
+          hajimari.io/icon: mdi:movie-search
         hosts:
           - host: &host prowlarr.${SECRET_PUBLIC_DOMAIN}
             paths:
