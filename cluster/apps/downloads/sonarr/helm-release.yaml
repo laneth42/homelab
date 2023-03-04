@@ -24,7 +24,7 @@ spec:
   values:
     image:
       repository: ghcr.io/onedr0p/sonarr-develop
-      tag: 4.0.0.390@sha256:64042c564fd0a24539c436cbaa660e5d2f0e36b8c62a8ae78dc45aff90e586ac
+      tag: 4.0.0.392@sha256:2702c352943f24c0e68ac02f71ea22430695e55b178cd564cc6fc9110cdd6298
     controller:
       annotations:
         reloader.stakater.com/auto: "true"
