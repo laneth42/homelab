@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - policy.yaml
+  - bazarr
   - unpackerr
   - overseerr
   - prowlarr
