@@ -14,14 +14,23 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
+  maxHistory: 3
   install:
     createNamespace: true
     remediation:
-      retries: 5
+      retries: 3
   upgrade:
+    cleanupOnFail: true
     remediation:
-      retries: 5
+      retries: 3
+  uninstall:
+    keepHistory: false
   values:
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        setGateway: "true"
     image:
       repository: ghcr.io/onedr0p/unpackerr
       tag: 0.11.1@sha256:8aa2e192f27fe2f6c22b4c73ec780507f2b26cfed26d4c906b1852f53a18d27d
@@ -56,11 +65,9 @@ spec:
         server: "${SECRET_MEDIA_SERVER}"
         path: /media/requests/complete
         mountPath: /media/requests/complete
-    podAnnotations:
-      secret.reloader.stakater.com/reload: unpackerr
     resources:
       requests:
-        cpu: 100m
+        cpu: 10m
         memory: 250Mi
       limits:
-        memory: 1000Mi
+        memory: 2000Mi

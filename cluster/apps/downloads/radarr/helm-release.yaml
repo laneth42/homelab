@@ -14,14 +14,23 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
+  maxHistory: 3
   install:
     createNamespace: true
     remediation:
-      retries: 5
+      retries: 3
   upgrade:
+    cleanupOnFail: true
     remediation:
-      retries: 5
+      retries: 3
+  uninstall:
+    keepHistory: false
   values:
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        setGateway: "true"
     image:
       repository: ghcr.io/onedr0p/radarr-develop
       tag: 4.4.2.6956@sha256:9144561f5b701ea67c8352eb416ab57c6a8630d2b61651475ae37d00874915f4
@@ -51,9 +60,6 @@ spec:
         tls:
           - hosts:
               - *host
-    controller:
-      labels:
-        setGateway: "true"
     podSecurityContext:
       runAsUser: 2000
       runAsGroup: 2000
