@@ -2,12 +2,11 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: downloads
 resources:
-  - ./helm-release.yaml
-  - ./pvc.yaml
+  - ./helmrelease.yaml
+  - ./config-pvc.yaml
   - ./volsync.yaml
 labels:
   - pairs:
-      app.kubernetes.io/name: bazarr
-      app.kubernetes.io/instance: bazarr
+      app.kubernetes.io/name: prowlarr
+      app.kubernetes.io/instance: prowlarr
