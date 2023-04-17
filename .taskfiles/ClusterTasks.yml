@@ -24,10 +24,8 @@ tasks:
   reconcile:
     desc: Force update Flux to pull in changes from your Git repository
     cmds:
-      - flux reconcile -n flux-system source git laneth-cluster
-      - flux reconcile -n flux-system kustomization laneth-cluster
       - flux reconcile -n flux-system source git laneth-kubernetes
-      - flux reconcile -n flux-system kustomization laneth-kubernetes-cluster
+      - flux reconcile -n flux-system kustomization laneth-apps
 
   hr-restart:
     desc: Restart all failed Helm Releases
