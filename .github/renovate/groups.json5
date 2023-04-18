@@ -1,69 +1,65 @@
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "packageRules": [
     {
-      "description": "1Password Connect and Sync images",
+      "description": "1Password Group",
       "groupName": "1Password",
       "matchPackagePatterns": ["1password"],
       "matchDatasources": ["docker"],
-      "group": { "commitMessageTopic": "{{{groupName}}} group" },
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
       "separateMinorPatch": true
     },
     {
-      "description": "Cert-Manager image (for CRDs) and chart",
-      "groupName": "Cert-Manager",
-      "matchPackagePatterns": ["cert-manager"],
-      "matchDatasources": ["docker", "helm"],
-      "group": { "commitMessageTopic": "{{{groupName}}} group" },
-      "separateMinorPatch": true
-    },
-    {
-      "description": "External Snapshotter kustomization (for CRDs) and chart",
-      "groupName": "External Snapshotter",
-      "matchPackagePatterns": ["external-snapshotter", "snapshot-controller"],
+      "description": "Flux Group",
+      "groupName": "Flux",
+      "matchPackagePatterns": ["flux"],
       "matchDatasources": ["docker", "github-tags"],
-      "group": { "commitMessageTopic": "{{{groupName}}} group" },
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
       "separateMinorPatch": true
     },
     {
-      "description": "Immich images",
+      "description": "Immich Group",
       "groupName": "Immich",
       "matchPackagePatterns": ["immich"],
       "matchDatasources": ["docker"],
-      "group": { "commitMessageTopic": "{{{groupName}}} group" },
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
       "separateMinorPatch": true
     },
     {
-      "description": "Node Feature Discovery kustomization (for CRDs) and chart",
-      "groupName": "Node Feature Discovery",
-      "matchPackagePatterns": ["node-feature-discovery"],
-      "matchDatasources": ["helm", "github-tags"],
-      "group": { "commitMessageTopic": "{{{groupName}}} group" },
-      "separateMinorPatch": true
-    },
-    {
-      "description": "Rook-Ceph image and chart",
+      "description": "Rook-Ceph Group",
       "groupName": "Rook-Ceph",
       "matchPackagePatterns": ["rook.ceph"],
-      "matchDatasources": ["docker", "helm"],
-      "group": { "commitMessageTopic": "{{{groupName}}} group" },
+      "matchDatasources": ["helm"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
       "separateMinorPatch": true
     },
     {
-      "description": "Thanos image and chart - mismatched versions",
-      "groupName": "Thanos",
-      "matchPackagePatterns": ["thanos"],
-      "matchDatasources": ["docker", "github-releases", "helm"],
-      "matchUpdateTypes": ["minor", "patch"],
-      "group": { "commitMessageTopic": "{{{groupName}}} group" },
-      "separateMinorPatch": false
+      "description": "External Snapshotter Group",
+      "groupName": "External Snapshotter",
+      "matchPackageNames": ["snapshot-controller", "snapshot-validation-webhook"],
+      "matchDatasources": ["helm"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
+      "separateMinorPatch": true
     },
     {
-      "description": "Vector image and chart - mismatched versions",
-      "groupName": "Vector",
-      "matchPackagePatterns": ["vector"],
-      "matchDatasources": ["docker", "github-releases", "helm"],
+      "description": "Tekton Group",
+      "groupName": "Tekton",
+      "matchPackagePatterns": ["tektoncd"],
+      "matchDatasources": ["github-releases"],
       "matchUpdateTypes": ["minor", "patch"],
-      "group": { "commitMessageTopic": "{{{groupName}}} group" },
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
       "separateMinorPatch": false
     }
   ]
