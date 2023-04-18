@@ -22,6 +22,9 @@
   "dependencyDashboardTitle": "Renovate Dashboard",
   "suppressNotifications": ["prIgnoreNotification"],
   "ignorePaths": ["archive/**"],
+  "pre-commit": {
+    "enabled": true
+  },
   "timezone": "America/Toronto",
   "flux": {
     "fileMatch": ["kubernetes/.+\\.ya?ml$"]
