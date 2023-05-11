@@ -2,7 +2,7 @@
 version: "3"
 
 vars:
-  CLUSTER_DIR: "{{.PROJECT_DIR}}/cluster"
+  KUBERNETES_DIR: "{{.ROOT_DIR}}/kubernetes"
 
 env:
   KUBECONFIG: "{{.ROOT_DIR}}/kubeconfig"
