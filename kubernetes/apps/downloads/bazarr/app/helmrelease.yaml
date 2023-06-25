@@ -32,7 +32,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: ghcr.io/onedr0p/bazarr
-      tag: 1.2.0@sha256:6e6cae293509d92636dfe2102d4613f858449c748ffc4a8b34c39683cd8b1e35
+      tag: 1.2.2@sha256:9656191a1347e44de7fc883912bb00d6a8d5c190dbd0dd77d5ba1ba075095b65
     env:
       TZ: ${TZ}
     service:
