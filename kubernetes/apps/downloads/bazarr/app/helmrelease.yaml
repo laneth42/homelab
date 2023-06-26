@@ -6,7 +6,7 @@ metadata:
   name: bazarr
   namespace: downloads
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
@@ -26,6 +26,11 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: volsync
+      namespace: volsync
   values:
     controller:
       annotations:
@@ -85,10 +90,9 @@ spec:
         image: registry.k8s.io/git-sync/git-sync:v3.6.7
         imagePullPolicy: IfNotPresent
         args:
-          - --repo=https://github.com/KBlixt/subcleaner.git
+          - --repo=https://github.com/KBlixt/subcleaner
           - --branch=master
-          - --depth=1
-          - --wait=21600 # 6 hours
-          - --root=/add-ons/subcleaner
+          - --wait=86400 # 1 day
+          - --root=/add-ons
         volumeMounts:
           - { name: add-ons, mountPath: /add-ons }

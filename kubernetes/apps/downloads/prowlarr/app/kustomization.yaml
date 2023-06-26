@@ -6,7 +6,3 @@ resources:
   - ./helmrelease.yaml
   - ./config-pvc.yaml
   - ./volsync.yaml
-labels:
-  - pairs:
-      app.kubernetes.io/name: prowlarr
-      app.kubernetes.io/instance: prowlarr

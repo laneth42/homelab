@@ -7,7 +7,3 @@ resources:
   - ./dashboard
   - ./config-pvc.yaml
   - ./volsync.yaml
-labels:
-  - pairs:
-      app.kubernetes.io/name: radarr
-      app.kubernetes.io/instance: radarr

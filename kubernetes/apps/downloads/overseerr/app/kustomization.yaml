@@ -7,7 +7,3 @@ resources:
   - ./helmrelease.yaml
   - ./config-pvc.yaml
   - ./volsync.yaml
-labels:
-  - pairs:
-      app.kubernetes.io/name: overseerr
-      app.kubernetes.io/instance: overseerr
