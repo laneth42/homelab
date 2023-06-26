@@ -30,7 +30,7 @@ metadata:
   name: sonarr
   namespace: downloads
 spec:
-  sourcePVC: sonarr-config-v4
+  sourcePVC: config-sonarr-0
   trigger:
     schedule: "0 0 * * *"
   restic:

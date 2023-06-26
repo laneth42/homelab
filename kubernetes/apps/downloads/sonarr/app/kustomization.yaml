@@ -6,5 +6,4 @@ namespace: downloads
 resources:
   - ./helmrelease.yaml
   - ./dashboard
-  - ./config-pvc.yaml
   - ./volsync.yaml
