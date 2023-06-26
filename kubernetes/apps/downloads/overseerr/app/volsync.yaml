@@ -30,7 +30,7 @@ metadata:
   name: overseerr
   namespace: downloads
 spec:
-  sourcePVC: overseerr-config-v4
+  sourcePVC: config-overseerr-0
   trigger:
     schedule: "0 0 * * *"
   restic:
