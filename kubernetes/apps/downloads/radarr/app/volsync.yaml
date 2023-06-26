@@ -30,7 +30,7 @@ metadata:
   name: radarr
   namespace: downloads
 spec:
-  sourcePVC: radarr-config-v4
+  sourcePVC: config-radarr-0
   trigger:
     schedule: "0 0 * * *"
   restic:
