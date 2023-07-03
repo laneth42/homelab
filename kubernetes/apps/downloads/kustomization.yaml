@@ -11,5 +11,6 @@ resources:
   - ./overseerr/ks.yaml
   - ./prowlarr/ks.yaml
   - ./radarr/ks.yaml
+  - ./readarr/ks.yaml
   - ./sonarr/ks.yaml
   - ./unpackerr/ks.yaml
