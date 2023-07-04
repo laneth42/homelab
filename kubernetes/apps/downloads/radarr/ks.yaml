@@ -6,6 +6,8 @@ metadata:
   name: cluster-apps-radarr
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: cluster-apps-external-secrets-stores
   path: ./kubernetes/apps/downloads/radarr/app
   prune: true
   sourceRef:

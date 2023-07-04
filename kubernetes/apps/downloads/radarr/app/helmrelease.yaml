@@ -43,10 +43,15 @@ spec:
       tag: 4.6.3.7516@sha256:798fe8b616da785edcb84cc871111e63c9227b970dbd33b4ac876faba4c058b8
     env:
       TZ: ${TIMEZONE}
+      PUSHOVER_DEBUG: "false"
+      PUSHOVER_APP_URL: &host "{{ .Release.Name }}.${SECRET_PUBLIC_DOMAIN}"
       RADARR__INSTANCE_NAME: Radarr
       RADARR__PORT: &port 80
       RADARR__APPLICATION_URL: "https://{{ .Release.Name }}.${SECRET_PUBLIC_DOMAIN}"
       RADARR__LOG_LEVEL: info
+    envFrom:
+      - secretRef:
+          name: radarr-secret
     service:
       main:
         ports:
@@ -75,7 +80,7 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/icon: mdi:filmstrip
         hosts:
-          - host: &host radarr.${SECRET_PUBLIC_DOMAIN}
+          - host: *host
             paths:
               - path: /
                 pathType: Prefix
@@ -86,9 +91,7 @@ spec:
       runAsUser: 2000
       runAsGroup: 2000
       fsGroup: 2000
-      fsGroupChangePolicy: "OnRootMismatch"
-      supplementalGroups:
-        - 100
+      fsGroupChangePolicy: OnRootMismatch
     volumeClaimTemplates:
       - name: config
         mountPath: /config
@@ -102,6 +105,14 @@ spec:
         server: ${SECRET_MEDIA_SERVER}
         path: /media
         mountPath: /media
+      scripts:
+        enabled: true
+        type: configMap
+        name: radarr-configmap
+        subPath: pushover-notify.sh
+        mountPath: /scripts/pushover-notify.sh
+        defaultMode: 0775
+        readOnly: true
       backup:
         enabled: true
         type: nfs

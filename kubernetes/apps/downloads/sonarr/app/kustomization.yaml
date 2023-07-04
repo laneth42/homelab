@@ -4,6 +4,15 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: downloads
 resources:
+  - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./dashboard
   - ./volsync.yaml
+configMapGenerator:
+  - name: sonarr-configmap
+    files:
+      - ./scripts/pushover-notify.sh
+generatorOptions:
+  disableNameSuffixHash: true
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
