@@ -40,7 +40,7 @@ spec:
         setGateway: "true"
     image:
       repository: ghcr.io/onedr0p/sonarr-develop
-      tag: 4.0.0.651@sha256:c69522a4e1a70d318943d69e487dde626f36ae635103926ec25a9b6dfec10c01
+      tag: 4.0.0.671@sha256:2a3eae5853ea3119da098c314111e6d2cff700cd3e517150a76377c34cbf4f70
     env:
       TZ: ${TIMEZONE}
       PUSHOVER_DEBUG: "false"
