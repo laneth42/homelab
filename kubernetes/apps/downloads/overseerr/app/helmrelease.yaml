@@ -17,7 +17,6 @@ spec:
         namespace: flux-system
   maxHistory: 2
   install:
-    createNamespace: true
     remediation:
       retries: 3
   upgrade:
@@ -35,14 +34,10 @@ spec:
     controllers:
       main:
         type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
         labels:
           setGateway: "true"
-        pod:
-          securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
-            fsGroup: 1000
-            fsGroupChangePolicy: OnRootMismatch
         containers:
           main:
             image:
@@ -54,18 +49,24 @@ spec:
               PORT: &port 80
             resources:
               requests:
-                cpu: 10m
-                memory: 250Mi
+                cpu: 100m
+                memory: 256Mi
               limits:
                 memory: 1500Mi
+        pod:
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
         statefulset:
           volumeClaimTemplates:
             - name: config
-              globalMounts:
-                - path: /app/config
               accessMode: ReadWriteOnce
               size: 1Gi
               storageClass: ceph-block
+              globalMounts:
+                - path: /app/config
     service:
       main:
         ports:
@@ -85,7 +86,6 @@ spec:
               - path: /
                 service:
                   name: main
-                  port: http
         tls:
           - hosts:
               - *host
