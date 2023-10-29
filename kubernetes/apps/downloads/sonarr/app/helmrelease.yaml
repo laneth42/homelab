@@ -17,7 +17,6 @@ spec:
         namespace: flux-system
   maxHistory: 2
   install:
-    createNamespace: true
     remediation:
       retries: 3
   upgrade:
@@ -39,12 +38,6 @@ spec:
           reloader.stakater.com/auto: "true"
         labels:
           setGateway: "true"
-        pod:
-          securityContext:
-            runAsUser: 2000
-            runAsGroup: 2000
-            fsGroup: 2000
-            fsGroupChangePolicy: OnRootMismatch
         containers:
           main:
             image:
@@ -79,13 +72,18 @@ spec:
             resources:
               requests:
                 cpu: 10m
-                memory: 250Mi
+                memory: 256M
               limits:
-                memory: 2000Mi
+                memory: 1Gi
+        pod:
+          securityContext:
+            runAsUser: 2000
+            runAsGroup: 2000
+            fsGroup: 2000
+            fsGroupChangePolicy: OnRootMismatch
         statefulset:
           volumeClaimTemplates:
             - name: config
-              mountPath: /config
               accessMode: ReadWriteOnce
               size: 5Gi
               storageClass: ceph-block
@@ -107,29 +105,25 @@ spec:
               - path: /
                 service:
                   name: main
-                  port: http
         tls:
           - hosts:
               - *host
     persistence:
       media:
-        enabled: true
         type: nfs
         server: ${SECRET_MEDIA_SERVER}
         path: /media
-        mountPath: /media
-      scripts:
-        enabled: true
+      pushover-notify:
         type: configMap
         name: sonarr-configmap
-        subPath: pushover-notify.sh
-        mountPath: /scripts/pushover-notify.sh
         defaultMode: 0775
-        readOnly: true
+        globalMounts:
+          - path: /scripts/pushover-notify.sh
+            subPath: pushover-notify.sh
+            readOnly: true
       backup:
-        enabled: true
         type: nfs
         server: ${SECRET_BACKUP_SERVER}
         path: ${SECRET_BACKUP_FOLDER}/sonarr
-        mountPath: /config/Backups
-        readOnly: false
+        globalMounts:
+          - path: /config/Backups
