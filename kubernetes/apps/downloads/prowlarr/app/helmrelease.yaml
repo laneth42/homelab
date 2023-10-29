@@ -17,7 +17,6 @@ spec:
         namespace: flux-system
   maxHistory: 2
   install:
-    createNamespace: true
     remediation:
       retries: 3
   upgrade:
@@ -39,17 +38,11 @@ spec:
           reloader.stakater.com/auto: "true"
         labels:
           setGateway: "true"
-        pod:
-          securityContext:
-            runAsUser: 2000
-            runAsGroup: 2000
-            fsGroup: 2000
-            fsGroupChangePolicy: OnRootMismatch
         containers:
           main:
             image:
-              repository: ghcr.io/onedr0p/prowlarr-nightly
-              tag: 1.10.2.4061@sha256:2bacf2a1cd8ff23d50db9711bb42fcbafa90b96eb42f30d4e783b8e7882e162f
+              repository: ghcr.io/onedr0p/prowlarr-develop
+              tag: 1.10.1.4059@sha256:efb4565b4b6aba410a0d23ed8007dafeeed8cd614fc6115dd5591c06ee068035
             env:
               TZ: ${TIMEZONE}
               PROWLARR__INSTANCE_NAME: Prowlarr
@@ -76,10 +69,15 @@ spec:
                 memory: 100Mi
               limits:
                 memory: 500Mi
+        pod:
+          securityContext:
+            runAsUser: 2000
+            runAsGroup: 2000
+            fsGroup: 2000
+            fsGroupChangePolicy: OnRootMismatch
         statefulset:
           volumeClaimTemplates:
             - name: config
-              mountPath: /config
               accessMode: ReadWriteOnce
               size: 1Gi
               storageClass: ceph-block
@@ -101,15 +99,13 @@ spec:
               - path: /
                 service:
                   name: main
-                  port: http
         tls:
           - hosts:
               - *host
     persistence:
       backup:
-        enabled: true
         type: nfs
         server: ${SECRET_BACKUP_SERVER}
         path: ${SECRET_BACKUP_FOLDER}/prowlarr
-        mountPath: /config/Backups
-        readOnly: false
+        globalMounts:
+          - path: /config/Backups
