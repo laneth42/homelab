@@ -23,6 +23,52 @@ spec:
     - extract:
         key: volsync-restic-template
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sonarr-config-v1
+  namespace: downloads
+  labels:
+    app.kubernetes.io/name: sonarr
+    app.kubernetes.io/instance: sonarr
+    app.kubernetes.io/part-of: sonarr
+spec:
+  accessModes: ["ReadWriteOnce"]
+  dataSourceRef:
+    kind: ReplicationDestination
+    apiGroup: volsync.backube
+    name: sonarr-bootstrap
+  resources:
+    requests:
+      storage: 5Gi # must match the ReplicationDestination `.spec.capacity` below
+  storageClassName: ceph-block
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/volsync.backube/replicationdestination_v1alpha1.json
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  name: sonarr-bootstrap
+  namespace: downloads
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+spec:
+  trigger:
+    manual: restore-once
+  restic:
+    repository: sonarr-volsync
+    copyMethod: Snapshot
+    volumeSnapshotClassName: csi-ceph-blockpool
+    cacheStorageClassName: local-path
+    cacheAccessModes: ["ReadWriteOnce"]
+    cacheCapacity: 8Gi
+    storageClassName: ceph-block
+    accessModes: ["ReadWriteOnce"]
+    capacity: 5Gi # must match the PersistentVolumeClaim `.resources.requests.storage` size above
+    moverSecurityContext:
+      runAsUser: 2000
+      runAsGroup: 2000
+      fsGroup: 2000
+---
 # yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/volsync.backube/replicationsource_v1alpha1.json
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
@@ -30,17 +76,19 @@ metadata:
   name: sonarr
   namespace: downloads
 spec:
-  sourcePVC: config-sonarr-0
+  sourcePVC: sonarr-config-v1
   trigger:
     schedule: "0 7 * * *"
   restic:
     copyMethod: Snapshot
     pruneIntervalDays: 10
     repository: sonarr-volsync
+    volumeSnapshotClassName: csi-ceph-blockpool
     cacheCapacity: 8Gi
     cacheStorageClassName: local-path
-    volumeSnapshotClassName: csi-ceph-blockpool
+    cacheAccessModes: ["ReadWriteOnce"]
     storageClassName: ceph-block
+    accessModes: ["ReadWriteOnce"]
     moverSecurityContext:
       runAsUser: 2000
       runAsGroup: 2000
