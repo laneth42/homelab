@@ -3,14 +3,14 @@
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
-  name: radarr-restic
+  name: radarr-volsync
   namespace: downloads
 spec:
   secretStoreRef:
     kind: ClusterSecretStore
     name: onepassword-connect
   target:
-    name: radarr-restic
+    name: radarr-volsync
     creationPolicy: Owner
     template:
       engineVersion: v2
@@ -36,7 +36,7 @@ spec:
   restic:
     copyMethod: Snapshot
     pruneIntervalDays: 10
-    repository: radarr-restic
+    repository: radarr-volsync
     cacheCapacity: 8Gi
     cacheStorageClassName: local-path
     volumeSnapshotClassName: csi-ceph-blockpool

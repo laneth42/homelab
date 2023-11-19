@@ -3,14 +3,14 @@
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
-  name: readarr-restic
+  name: readarr-volsync
   namespace: downloads
 spec:
   secretStoreRef:
     kind: ClusterSecretStore
     name: onepassword-connect
   target:
-    name: readarr-restic
+    name: readarr-volsync
     creationPolicy: Owner
     template:
       engineVersion: v2
@@ -36,7 +36,7 @@ spec:
   restic:
     copyMethod: Snapshot
     pruneIntervalDays: 10
-    repository: readarr-restic
+    repository: readarr-volsync
     cacheCapacity: 8Gi
     cacheStorageClassName: local-path
     volumeSnapshotClassName: csi-ceph-blockpool
