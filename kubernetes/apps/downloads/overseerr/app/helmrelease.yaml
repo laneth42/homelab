@@ -33,7 +33,6 @@ spec:
   values:
     controllers:
       main:
-        type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
         labels:
@@ -59,14 +58,6 @@ spec:
             runAsGroup: 1000
             fsGroup: 1000
             fsGroupChangePolicy: OnRootMismatch
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteOnce
-              size: 1Gi
-              storageClass: ceph-block
-              globalMounts:
-                - path: /app/config
     service:
       main:
         ports:
@@ -92,6 +83,8 @@ spec:
     # hack - this section's defaults conflict with volumeClaimTemplates and mounts the PV in the wrong place.
     persistence:
       config:
+        enabled: true
+        existingClaim: overseerr-config-v1
         globalMounts:
           - path: /app/config
             readOnly: false
