@@ -6,6 +6,7 @@ metadata:
   name: &app flux-webhooks-laneth
   namespace: flux-system
 spec:
+  targetNamespace: flux-system
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app

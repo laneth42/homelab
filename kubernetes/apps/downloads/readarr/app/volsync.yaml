@@ -4,7 +4,6 @@ apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
   name: readarr-volsync
-  namespace: downloads
 spec:
   secretStoreRef:
     kind: ClusterSecretStore
@@ -27,7 +26,6 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: readarr-config-v1
-  namespace: downloads
   labels:
     app.kubernetes.io/name: readarr
     app.kubernetes.io/instance: readarr
@@ -48,7 +46,6 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationDestination
 metadata:
   name: readarr-bootstrap
-  namespace: downloads
   annotations:
     kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
 spec:
@@ -74,7 +71,6 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   name: readarr
-  namespace: downloads
 spec:
   sourcePVC: readarr-config-v1
   trigger:
