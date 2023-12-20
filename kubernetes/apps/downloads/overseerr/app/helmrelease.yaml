@@ -67,7 +67,7 @@ spec:
         enabled: true
         className: external
         annotations:
-          external-dns.alpha.kubernetes.io/target: ingress.${SECRET_PUBLIC_DOMAIN}
+          external-dns.alpha.kubernetes.io/target: external.${SECRET_PUBLIC_DOMAIN}
           hajimari.io/enable: "true"
           hajimari.io/icon: mdi:eye-circle
         hosts:

@@ -4,7 +4,7 @@ kind: Ingress
 metadata:
   name: webhook-receiver-laneth
   annotations:
-    external-dns.alpha.kubernetes.io/target: ingress.${SECRET_PUBLIC_DOMAIN}
+    external-dns.alpha.kubernetes.io/target: external.${SECRET_PUBLIC_DOMAIN}
     hajimari.io/enable: "false"
 spec:
   ingressClassName: external
