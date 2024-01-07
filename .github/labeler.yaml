@@ -1,16 +1,17 @@
 ---
 area/ansible:
   - changed-files:
-      - any-glob-to-any-file: "ansible/**/*"
+      - any-glob-to-any-file: ansible/**/*
+area/docs:
+  - changed-files:
+      - any-glob-to-any-file: README.md
 area/github:
   - changed-files:
-      - any-glob-to-any-file: ".github/**/*"
+      - any-glob-to-any-file: .github/**/*
 area/kubernetes:
   - changed-files:
-      - any-glob-to-any-file: "kubernetes/**/*"
-area/hack:
+      - any-glob-to-any-file: kubernetes/**/*
+area/taskfile:
   - changed-files:
-      - any-glob-to-any-file: "hack/**/*"
-area/terraform:
-  - changed-files:
-      - any-glob-to-any-file: "terraform/**/*"
+      - any-glob-to-any-file: .taskfiles/**/*
+      - any-glob-to-any-file: Taskfile*
