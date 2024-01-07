@@ -58,7 +58,7 @@ spec:
     repository: recyclarr-volsync
     copyMethod: Snapshot
     volumeSnapshotClassName: csi-ceph-blockpool
-    cacheStorageClassName: local-path
+    cacheStorageClassName: local-hostpath
     cacheAccessModes: ["ReadWriteOnce"]
     cacheCapacity: 8Gi
     storageClassName: ceph-block
@@ -85,7 +85,7 @@ spec:
     repository: recyclarr-volsync
     volumeSnapshotClassName: csi-ceph-blockpool
     cacheCapacity: 8Gi
-    cacheStorageClassName: local-path
+    cacheStorageClassName: local-hostpath
     cacheAccessModes: ["ReadWriteOnce"]
     storageClassName: ceph-block
     accessModes: ["ReadWriteOnce"]
