@@ -16,8 +16,6 @@
     "github>laneth42/homelab//.github/renovate/labels.json5",
     "github>laneth42/homelab//.github/renovate/semanticCommits.json5",
   ],
-  "onboarding": false,
-  "requireConfig": "optional",
   "dependencyDashboardTitle": "Renovate Dashboard",
   "suppressNotifications": ["prEditedNotification", "prIgnoreNotification"],
   "rebaseWhen": "conflicted",
