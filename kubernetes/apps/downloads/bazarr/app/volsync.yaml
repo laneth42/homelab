@@ -55,7 +55,7 @@ spec:
     repository: bazarr-volsync
     copyMethod: Snapshot
     volumeSnapshotClassName: csi-ceph-blockpool
-    cacheStorageClassName: local-hostpath
+    cacheStorageClassName: openebs-hostpath
     cacheAccessModes: ["ReadWriteOnce"]
     cacheCapacity: 8Gi
     storageClassName: ceph-block
@@ -81,7 +81,7 @@ spec:
     repository: bazarr-volsync
     volumeSnapshotClassName: csi-ceph-blockpool
     cacheCapacity: 8Gi
-    cacheStorageClassName: local-hostpath
+    cacheStorageClassName: openebs-hostpath
     cacheAccessModes: ["ReadWriteOnce"]
     storageClassName: ceph-block
     accessModes: ["ReadWriteOnce"]
