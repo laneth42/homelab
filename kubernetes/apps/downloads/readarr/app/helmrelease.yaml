@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/app-template-3.0.1/charts/other/app-template/values.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -21,21 +21,21 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
-  uninstall:
-    keepHistory: false
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
   values:
     controllers:
-      main:
+      readarr:
         annotations:
+          kubectl.kubernetes.io/default-container: app
           reloader.stakater.com/auto: "true"
         labels:
           setGateway: "true"
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/onedr0p/readarr-nightly
               tag: 0.3.22.2491@sha256:dd429811956178223ca7db1699f4ce03641edfa39ea8a1436a33272618278ade
@@ -71,14 +71,13 @@ spec:
             fsGroup: 2000
             fsGroupChangePolicy: OnRootMismatch
     service:
-      main:
-        controller: main
+      app:
+        controller: readarr
         ports:
           http:
             port: *port
     ingress:
-      main:
-        enabled: true
+      app:
         className: internal
         annotations:
           hajimari.io/enable: "true"
@@ -88,10 +87,10 @@ spec:
             paths:
               - path: /
                 service:
-                  identifier: main
+                  identifier: app
+                  port: http
         tls:
-          - hosts:
-              - *host
+          - hosts: [*host]
     persistence:
       config:
         existingClaim: readarr-config-v1
