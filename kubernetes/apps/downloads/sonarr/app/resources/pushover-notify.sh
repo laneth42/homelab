@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2154
 
-PUSHOVER_DEBUG="${PUSHOVER_DEBUG:-"true"}"
+PUSHOVER_DEBUG="${PUSHOVER_DEBUG:-"false"}"
 # kubectl port-forward service/sonarr -n default 8989:80
 # export PUSHOVER_TOKEN="";
 # export PUSHOVER_USER_KEY="";
@@ -10,12 +10,6 @@ PUSHOVER_DEBUG="${PUSHOVER_DEBUG:-"true"}"
 
 CONFIG_FILE="/config/config.xml" && [[ "${PUSHOVER_DEBUG}" == "true" ]] && CONFIG_FILE="config.xml"
 ERRORS=()
-
-#
-# Discoverable variables
-#
-# shellcheck disable=SC2086
-PUSHOVER_STARR_APIKEY="$(xmlstarlet sel -t -v "//ApiKey" -nl ${CONFIG_FILE})" && [[ -z "${PUSHOVER_STARR_APIKEY}" ]] && ERRORS+=("PUSHOVER_STARR_APIKEY not defined")
 
 #
 # Configurable variables
@@ -68,6 +62,19 @@ if [[ "${sonarr_eventtype:-}" == "Download" ]]; then
         "${sonarr_episodefile_quality}"
     printf -v PUSHOVER_URL "%s/series/%s" "${sonarr_applicationurl:-localhost}" "${sonarr_series_titleslug}"
     printf -v PUSHOVER_URL_TITLE "View series in %s" "${sonarr_instancename:-Sonarr}"
+fi
+
+#
+# Send notification on Manual Interaction Required
+#
+if [[ "${sonarr_eventtype:-}" == "ManualInteractionRequired" ]]; then
+    PUSHOVER_PRIORITY="1"
+    printf -v PUSHOVER_TITLE "Episode requires manual interaction"
+    printf -v PUSHOVER_MESSAGE "<b>%s</b><small>\n<b>Client:</b> %s</small>" \
+        "${sonarr_series_title}" \
+        "${sonarr_download_client}"
+    printf -v PUSHOVER_URL "%s/activity/queue" "${sonarr_applicationurl:-localhost}"
+    printf -v PUSHOVER_URL_TITLE "View queue in %s" "${sonarr_instancename:-Sonarr}"
 fi
 
 notification=$(jq -n \
