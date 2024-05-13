@@ -14,7 +14,6 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 2
   install:
     remediation:
       retries: 3
@@ -23,8 +22,6 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
-  uninstall:
-    keepHistory: false
   values:
     controllers:
       unpackerr:
@@ -36,25 +33,29 @@ spec:
         containers:
           app:
             image:
-              repository: docker.io/golift/unpackerr
-              tag: 0.13.1
+              repository: ghcr.io/unpackerr/unpackerr
+              tag: 0.13.1@sha256:04fcb43fa70e6db88331962760607842cdf19889e6d35d9d2fde0cf6a1550eaf
             env:
               TZ: ${TIMEZONE}
-              UN_WEBSERVER_METRICS: "true"
+              UN_WEBSERVER_METRICS: true
+              UN_WEBSERVER_LOG_FILE: /logs/webserver.log
+              UN_ACTIVITY: true
               UN_SONARR_0_URL: http://sonarr.downloads.svc.cluster.local
               UN_SONARR_0_PATHS_0: /complete
               UN_RADARR_0_URL: http://radarr.downloads.svc.cluster.local
               UN_RADARR_0_PATHS_0: /complete
             envFrom:
               - secretRef:
-                  name: unpackerr
+                  name: unpackerr-secret
             probes:
               liveness:
                 enabled: true
               readiness:
                 enabled: true
-              startup:
-                enabled: true
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 10m
@@ -63,6 +64,7 @@ spec:
                 memory: 2000Mi
         pod:
           securityContext:
+            runAsNonRoot: true
             runAsUser: 2000
             runAsGroup: 2000
             fsGroup: 2000
@@ -79,6 +81,8 @@ spec:
         endpoints:
           - port: http
     persistence:
+      logs:
+        type: emptyDir
       complete:
         type: nfs
         server: ${SECRET_MEDIA_SERVER}
