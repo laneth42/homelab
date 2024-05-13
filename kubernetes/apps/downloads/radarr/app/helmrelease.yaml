@@ -14,7 +14,6 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 2
   install:
     remediation:
       retries: 3
@@ -38,17 +37,17 @@ spec:
           app:
             image:
               repository: ghcr.io/onedr0p/radarr-develop
-              tag: 5.5.2.8781@sha256:4b7de43df00613272532de7ecfc6a3207cb0a74fdcb2b05dd110ec2ebb493352
+              tag: 5.5.3.8819@sha256:c9637c4bdf6e929b823dc8497ff34fdcb2e0868703cd686a20a1d55b8b6381de
             env:
+              RADARR__APP__INSTANCENAME: Radarr
+              RADARR__APP__THEME: dark
+              RADARR__AUTH__METHOD: External
+              RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              RADARR__LOG__DBENABLED: "False"
+              RADARR__LOG__LEVEL: info
+              RADARR__SERVER__PORT: &port 80
+              RADARR__UPDATE__BRANCH: develop
               TZ: ${TIMEZONE}
-              PUSHOVER_DEBUG: "false"
-              PUSHOVER_APP_URL: &host "{{ .Release.Name }}.${SECRET_PUBLIC_DOMAIN}"
-              RADARR__AUTHENTICATION_METHOD: External
-              RADARR__AUTHENTICATION_REQUIRED: DisabledForLocalAddresses
-              RADARR__INSTANCE_NAME: Radarr
-              RADARR__PORT: &port 80
-              RADARR__APPLICATION_URL: "https://{{ .Release.Name }}.${SECRET_PUBLIC_DOMAIN}"
-              RADARR__LOG_LEVEL: info
             envFrom:
               - secretRef:
                   name: radarr-secret
@@ -65,8 +64,10 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
-              startup:
-                enabled: false
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 10m
@@ -75,6 +76,7 @@ spec:
                 memory: 1Gi
         pod:
           securityContext:
+            runAsNonRoot: true
             runAsUser: 2000
             runAsGroup: 2000
             fsGroup: 2000
@@ -92,7 +94,7 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/icon: mdi:filmstrip
         hosts:
-          - host: *host
+          - host: &host "{{ .Release.Name }}.${SECRET_PUBLIC_DOMAIN}"
             paths:
               - path: /
                 service:
@@ -103,10 +105,6 @@ spec:
     persistence:
       config:
         existingClaim: radarr-config-v1
-      media:
-        type: nfs
-        server: ${SECRET_MEDIA_SERVER}
-        path: /media
       pushover-notify:
         type: configMap
         name: radarr-configmap
@@ -115,6 +113,12 @@ spec:
           - path: /scripts/pushover-notify.sh
             subPath: pushover-notify.sh
             readOnly: true
+      tmp:
+        type: emptyDir
+      media:
+        type: nfs
+        server: ${SECRET_MEDIA_SERVER}
+        path: /media
       backup:
         type: nfs
         server: ${SECRET_BACKUP_SERVER}

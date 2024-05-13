@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2154
 
-PUSHOVER_DEBUG="${PUSHOVER_DEBUG:-"true"}"
+PUSHOVER_DEBUG="${PUSHOVER_DEBUG:-"false"}"
 # kubectl port-forward service/radarr -n default 7878:80
 # export PUSHOVER_TOKEN="";
 # export PUSHOVER_USER_KEY="";
@@ -10,12 +10,6 @@ PUSHOVER_DEBUG="${PUSHOVER_DEBUG:-"true"}"
 
 CONFIG_FILE="/config/config.xml" && [[ "${PUSHOVER_DEBUG}" == "true" ]] && CONFIG_FILE="config.xml"
 ERRORS=()
-
-#
-# Discoverable variables
-#
-# shellcheck disable=SC2086
-PUSHOVER_STARR_APIKEY="$(xmlstarlet sel -t -v "//ApiKey" -nl ${CONFIG_FILE})" && [[ -z "${PUSHOVER_STARR_APIKEY}" ]] && ERRORS+=("PUSHOVER_STARR_APIKEY not defined")
 
 #
 # Configurable variables
@@ -50,7 +44,7 @@ fi
 #
 if [[ "${radarr_eventtype:-}" == "Test" ]]; then
     PUSHOVER_TITLE="Test Notification"
-    PUSHOVER_MESSAGE="Howdy this is a test notification from ${PUSHOVER_STARR_INSTANCE_NAME}"
+    PUSHOVER_MESSAGE="Howdy this is a test notification from ${radarr_instancename:-Radarr}"
 fi
 
 #
@@ -68,6 +62,20 @@ if [[ "${radarr_eventtype:-}" == "Download" ]]; then
         "$(numfmt --to iec --format "%8.2f" "${radarr_release_size}")"
     printf -v PUSHOVER_URL "%s/movie/%s" "${radarr_applicationurl:-localhost}" "${radarr_movie_tmdbid}"
     printf -v PUSHOVER_URL_TITLE "View movie in %s" "${radarr_instancename:-Radarr}"
+fi
+
+#
+# Send notification on Manual Interaction Required
+#
+if [[ "${radarr_eventtype:-}" == "ManualInteractionRequired" ]]; then
+    PUSHOVER_PRIORITY="1"
+    printf -v PUSHOVER_TITLE "Movie requires manual interaction"
+    printf -v PUSHOVER_MESSAGE "<b>%s (%s)</b><small>\n<b>Client:</b> %s</small>" \
+        "${radarr_movie_title}" \
+        "${radarr_movie_year}" \
+        "${radarr_download_client}"
+    printf -v PUSHOVER_URL "%s/activity/queue" "${radarr_applicationurl:-localhost}"
+    printf -v PUSHOVER_URL_TITLE "View queue in %s" "${radarr_instancename:-Radarr}"
 fi
 
 notification=$(jq -n \
