@@ -14,7 +14,6 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 2
   install:
     remediation:
       retries: 3
@@ -44,12 +43,22 @@ spec:
               LOG_LEVEL: "info"
               PORT: &port 80
             probes:
-              liveness:
+              liveness: &probes
                 enabled: true
-              readiness:
-                enabled: true
-              startup:
-                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/status
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 100m
@@ -58,6 +67,7 @@ spec:
                 memory: 1500Mi
         pod:
           securityContext:
+            runAsNonRoot: true
             runAsUser: 1000
             runAsGroup: 1000
             fsGroup: 1000
@@ -89,3 +99,13 @@ spec:
         existingClaim: overseerr-config-v1
         globalMounts:
           - path: /app/config
+      cache:
+        existingClaim: overseerr-cache
+        globalMounts:
+          - path: /app/config/cache
+      logs:
+        type: emptyDir
+        globalMounts:
+          - path: /app/config/logs
+      tmp:
+        type: emptyDir
