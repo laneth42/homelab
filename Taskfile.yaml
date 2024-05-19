@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+vars:
+  KUBERNETES_DIR: "{{.ROOT_DIR}}/kubernetes"
+
+env:
+  KUBECONFIG: "{{.ROOT_DIR}}/kubeconfig"
+  SOPS_AGE_KEY_FILE: ~/.config/sops/age/keys.txt
+
+includes:
+  flux: .taskfiles/Flux/Taskfile.yaml
+  kubernetes:
+    aliases: ["k8s", "ku"]
+    taskfile: .taskfiles/Kubernetes/Taskfile.yaml
+
+tasks:
+
+  default:
+    silent: true
+    cmd: task -l

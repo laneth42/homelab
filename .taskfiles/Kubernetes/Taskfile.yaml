@@ -1,0 +1,65 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+tasks:
+
+  browse-pvc:
+    desc: Browse PersistentVolumeClaims
+    summary: |
+      Args:
+        ns: Namespace to browse PersistentVolumeClaims in (default: downloads)
+        claim: PersistentVolumeClaim to browse (required)
+    interactive: true
+    cmd: |
+      kubectl run -n {{.ns}} debug-{{.claim}} -i --tty --rm --image=null --privileged --overrides='
+        {
+          "apiVersion": "v1",
+          "metadata": {
+            "labels": {
+              "setGateway": "false"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "debug",
+                "image": "ghcr.io/onedr0p/alpine:rolling",
+                "command": ["/bin/bash"],
+                "stdin": true,
+                "stdinOnce": true,
+                "tty": true,
+                "volumeMounts": [
+                  {
+                    "name": "config",
+                    "mountPath": "/config"
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "config",
+                "persistentVolumeClaim": {
+                  "claimName": "{{.claim}}"
+                }
+              }
+            ],
+            "restartPolicy": "Never"
+          }
+        }'
+    vars:
+      ns: '{{.ns | default "downloads"}}'
+    requires:
+      vars: ["claim"]
+
+  network:
+    desc: Create a netshoot container for a cluster
+    summary: |
+      Args:
+        ns: Namespace the PVC is in (default: downloads)
+    interactive: true
+    cmd: |
+      kubectl run -n {{.ns}} netshoot --rm -i --tty --image ghcr.io/nicolaka/netshoot:latest {{.CLI_ARGS}}
+    vars:
+      ns: '{{.ns | default "downloads"}}'
