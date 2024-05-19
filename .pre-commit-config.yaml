@@ -1,14 +1,6 @@
 ---
 fail_fast: false
 repos:
-  - repo: https://github.com/adrienverge/yamllint
-    rev: v1.33.0
-    hooks:
-      - args:
-          - --config-file
-          - .github/linters/.yamllint.yaml
-        id: yamllint
-        exclude: ^(ansible/manifests/|.*dashboard.json)
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
     hooks:
