@@ -106,7 +106,7 @@ spec:
         type: emptyDir
       backup:
         type: nfs
-        server: ${SECRET_BACKUP_SERVER}
+        server: ${SECRET_BACKUP_SERVER:-server}
         path: ${SECRET_BACKUP_FOLDER}/prowlarr
         globalMounts:
           - path: /config/Backups

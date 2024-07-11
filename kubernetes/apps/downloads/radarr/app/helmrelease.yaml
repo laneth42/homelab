@@ -117,11 +117,11 @@ spec:
         type: emptyDir
       media:
         type: nfs
-        server: ${SECRET_MEDIA_SERVER}
+        server: ${SECRET_MEDIA_SERVER:-server}
         path: /media
       backup:
         type: nfs
-        server: ${SECRET_BACKUP_SERVER}
+        server: ${SECRET_BACKUP_SERVER:-server}
         path: ${SECRET_BACKUP_FOLDER}/radarr
         globalMounts:
           - path: /config/Backups

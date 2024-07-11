@@ -97,7 +97,7 @@ spec:
         existingClaim: bazarr-config-v1
       media:
         type: nfs
-        server: ${SECRET_MEDIA_SERVER}
+        server: ${SECRET_MEDIA_SERVER:-server}
         path: /media
       add-ons:
         type: emptyDir
