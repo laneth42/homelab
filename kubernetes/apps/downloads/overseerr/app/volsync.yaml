@@ -90,5 +90,5 @@ spec:
       runAsGroup: 1000
       fsGroup: 1000
     retain:
-      daily: 10
+      daily: 30
       within: 3d
