@@ -113,13 +113,17 @@ spec:
     persistence:
       config:
         existingClaim: sonarr-config-v1
-      pushover-notify:
+      cache:
+        existingClaim: sonarr-cache
+        globalMounts:
+          - path: /config/MediaCover
+      scripts:
         type: configMap
         name: sonarr-configmap
         defaultMode: 0775
         globalMounts:
-          - path: /scripts/pushover-notify.sh
-            subPath: pushover-notify.sh
+          - path: /scripts/pushover-notifier.sh
+            subPath: pushover-notifier.sh
             readOnly: true
       tmp:
         type: emptyDir
