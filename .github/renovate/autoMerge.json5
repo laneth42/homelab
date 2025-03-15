@@ -8,14 +8,6 @@
       "automergeType": "branch",
       "matchUpdateTypes": ["digest"],
       "matchPackagePattern": ["ghcr.io/onedr0p"]
-    },
-    {
-      "description": "Auto-merge GitHub Actions for minor and patch",
-      "matchManagers": ["github-actions"],
-      "matchDatasources": ["github-tags"],
-      "automerge": true,
-      "automergeType": "branch",
-      "matchUpdateTypes": ["minor", "patch"]
     }
   ]
 }
