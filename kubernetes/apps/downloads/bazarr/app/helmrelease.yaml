@@ -40,45 +40,59 @@ spec:
               tag: 1.5.1@sha256:a1b0d3a4e6462adb448dbfe4bf466e1d1bc920c17ac97c705b6db6eeb02b37b9
             env:
               TZ: ${TIMEZONE}
+            envFrom:
+              - secretRef:
+                  name: bazarr-secret
             probes:
-              liveness:
+              liveness: &probes
                 enabled: true
-              readiness:
-                enabled: true
-              startup:
-                enabled: true
-            securityContext:
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: &port 6767
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext: &securityContext
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 10m
-                memory: 250Mi
               limits:
-                memory: 2000Mi
+                memory: 1Gi
           subcleaner:
             image:
               repository: registry.k8s.io/git-sync/git-sync
-              tag: v4.4.0
-            args:
-              - --repo=https://github.com/KBlixt/subcleaner
-              - --ref=master
-              - --period=24h
-              - --root=/add-ons
-        pod:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 2000
-            runAsGroup: 2000
-            fsGroup: 2000
-            fsGroupChangePolicy: OnRootMismatch
+              tag: v4.4.0@sha256:0330739a707a2969d617e859f096659ab6d149212658ac0ad7e550b59482ebf0
+            env:
+              GITSYNC_REPO: https://github.com/KBlixt/subcleaner
+              GITSYNC_REF: master
+              GITSYNC_PERIOD: 24h
+              GITSYNC_ROOT: /subcleaner
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 128Mi
+            securityContext: *securityContext
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 2000
+        runAsGroup: 2000
+        fsGroup: 2000
+        fsGroupChangePolicy: OnRootMismatch
     service:
       app:
         controller: bazarr
         ports:
           http:
-            port: 6767
+            port: *port
     ingress:
       app:
         className: internal
@@ -103,11 +117,29 @@ spec:
     persistence:
       config:
         existingClaim: bazarr-config-v1
+      config-cache:
+        type: emptyDir
+        globalMounts:
+          - path: /config/cache
+      config-log:
+        type: emptyDir
+        globalMounts:
+          - path: /config/log
       media:
         type: nfs
         server: ${SECRET_MEDIA_SERVER:-server}
         path: /media
-      add-ons:
+        globalMounts:
+          - path: /media
+      scripts:
+        type: configMap
+        name: bazarr-scripts
+        defaultMode: 0775
+        globalMounts:
+          - path: /scripts/subcleaner.sh
+            subPath: subcleaner.sh
+            readOnly: true
+      subcleaner:
         type: emptyDir
       tmp:
         type: emptyDir
