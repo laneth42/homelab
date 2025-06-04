@@ -10,9 +10,6 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  dependsOn:
-    - name: external-secrets-stores
-      namespace: security
   path: ./kubernetes/apps/downloads/sonarr/app
   prune: true
   sourceRef:
