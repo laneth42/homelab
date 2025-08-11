@@ -1,21 +1,17 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: laneth-apps
   namespace: flux-system
 spec:
-  interval: 10m
-  path: ./kubernetes/apps
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: laneth-kubernetes
   decryption:
     provider: sops
     secretRef:
       name: sops-age-laneth
+  interval: 1h
+  path: ./kubernetes/apps
   postBuild:
     substituteFrom:
       - kind: ConfigMap
@@ -24,6 +20,10 @@ spec:
         name: cluster-secrets
       - kind: Secret
         name: laneth-secrets
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: laneth-kubernetes
   patches:
     - patch: |-
         apiVersion: kustomize.toolkit.fluxcd.io/v1
