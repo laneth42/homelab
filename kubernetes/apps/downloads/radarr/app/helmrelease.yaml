@@ -20,7 +20,6 @@ spec:
     controllers:
       radarr:
         annotations:
-          kubectl.kubernetes.io/default-container: app
           reloader.stakater.com/auto: "true"
         labels:
           setGateway: "true"
@@ -41,7 +40,7 @@ spec:
               TZ: ${TIMEZONE}
             envFrom:
               - secretRef:
-                  name: radarr-secret
+                  name: "{{ .Release.Name }}-secret"
             probes:
               liveness: &probes
                 enabled: true
@@ -61,7 +60,7 @@ spec:
               capabilities: { drop: ["ALL"] }
             resources:
               requests:
-                cpu: 10m
+                cpu: 100m
                 memory: 256M
               limits:
                 memory: 1Gi
@@ -74,7 +73,6 @@ spec:
             fsGroupChangePolicy: OnRootMismatch
     service:
       app:
-        controller: radarr
         ports:
           http:
             port: *port
@@ -88,20 +86,10 @@ spec:
     persistence:
       config:
         existingClaim: radarr-config-v1
-      cache:
-        existingClaim: radarr-cache
+      config-cache:
+        existingClaim: "{{ .Release.Name }}-cache"
         globalMounts:
           - path: /config/MediaCover
-      scripts:
-        type: configMap
-        name: radarr-configmap
-        defaultMode: 0775
-        globalMounts:
-          - path: /scripts/pushover-notifier.sh
-            subPath: pushover-notifier.sh
-            readOnly: true
-      tmp:
-        type: emptyDir
       media:
         type: nfs
         server: ${SECRET_MEDIA_SERVER:-server}
@@ -112,3 +100,5 @@ spec:
         path: ${SECRET_BACKUP_FOLDER}/radarr
         globalMounts:
           - path: /config/Backups
+      tmp:
+        type: emptyDir

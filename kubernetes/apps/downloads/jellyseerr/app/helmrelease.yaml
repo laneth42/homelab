@@ -20,19 +20,21 @@ spec:
     controllers:
       jellyseerr:
         annotations:
-          kubectl.kubernetes.io/default-container: app
           reloader.stakater.com/auto: "true"
         labels:
           setGateway: "true"
         containers:
           app:
             image:
-              repository: docker.io/fallenbagel/jellyseerr
-              tag: 2.7.3@sha256:4538137bc5af902dece165f2bf73776d9cf4eafb6dd714670724af8f3eb77764
+              repository: ghcr.io/fallenbagel/jellyseerr
+              tag: 2.7.3@sha256:9cc9e9ee6cd5cf5a23feb45c37742ba34cfd6314d81d259cddb373a97ac92cdd
             env:
               TZ: ${TIMEZONE}
               LOG_LEVEL: "info"
               PORT: &port 80
+            envFrom:
+              - secretRef:
+                  name: "{{ .Release.Name }}-secret"
             probes:
               liveness: &probes
                 enabled: true
@@ -52,7 +54,7 @@ spec:
               capabilities: { drop: ["ALL"] }
             resources:
               requests:
-                cpu: 100m
+                cpu: 10m
                 memory: 256Mi
               limits:
                 memory: 1500Mi
@@ -65,7 +67,6 @@ spec:
             fsGroupChangePolicy: OnRootMismatch
     service:
       app:
-        controller: jellyseerr
         ports:
           http:
             port: *port
@@ -81,13 +82,16 @@ spec:
         existingClaim: jellyseerr-config-v1
         globalMounts:
           - path: /app/config
-      cache:
-        existingClaim: jellyseerr-cache
+      config-cache:
+        existingClaim: "{{ .Release.Name }}-cache"
         globalMounts:
           - path: /app/config/cache
-      logs:
+      tmpfs:
         type: emptyDir
-        globalMounts:
-          - path: /app/config/logs
-      tmp:
-        type: emptyDir
+        advancedMounts:
+          jellyseerr:
+            app:
+              - path: /app/config/logs
+                subPath: logs
+              - path: /tmp
+                subPath: tmp
