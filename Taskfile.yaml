@@ -7,9 +7,10 @@ vars:
 
 env:
   KUBECONFIG: "{{.ROOT_DIR}}/kubeconfig"
-  SOPS_AGE_KEY_FILE: ~/.config/sops/age/keys.txt
+  SOPS_AGE_KEY_FILE: '{{.ROOT_DIR}}/age.key'
 
 includes:
+  bootstrap: .taskfiles/bootstrap/Taskfile.yaml
   flux: .taskfiles/Flux/Taskfile.yaml
   kubernetes:
     aliases: ["k8s", "ku"]

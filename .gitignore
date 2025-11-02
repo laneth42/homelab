@@ -8,6 +8,7 @@ kubeconfig
 kubeconfig.yaml
 # vscode-sops
 .decrypted~*.yaml
+*.key
 # gitguardian
 .envrc
 .cache_ggshield
