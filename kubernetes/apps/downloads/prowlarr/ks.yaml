@@ -9,11 +9,16 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/nfs-scaler
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
   interval: 1h
   path: ./kubernetes/apps/downloads/prowlarr/app
+  postBuild:
+    substitute:
+      APP: prowlarr
   prune: true
   retryInterval: 2m
   sourceRef:

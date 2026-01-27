@@ -9,8 +9,13 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/nfs-scaler
   interval: 1h
   path: ./kubernetes/apps/downloads/unpackerr/app
+  postBuild:
+    substitute:
+      APP: unpackerr
   prune: true
   retryInterval: 2m
   sourceRef:
