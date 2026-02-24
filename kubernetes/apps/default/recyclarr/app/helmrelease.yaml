@@ -33,6 +33,8 @@ spec:
                   name: "{{ .Release.Name }}-secret"
             args:
               - sync
+              - --log
+              - info
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
