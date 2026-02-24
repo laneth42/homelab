@@ -3,12 +3,9 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app bazarr
+  name: bazarr
   namespace: flux-system
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   components:
     - ../../../../components/nfs-scaler
   dependsOn:
@@ -20,9 +17,8 @@ spec:
     substitute:
       APP: bazarr
   prune: true
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: laneth-kubernetes
   targetNamespace: downloads
-  timeout: 5m
+  wait: false
