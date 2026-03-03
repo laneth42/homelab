@@ -10,8 +10,6 @@ sonarr:
     media_naming:
       episodes:
         rename: false
-      season: default
-      series: default
     quality_definition:
       type: series
     quality_profiles:
