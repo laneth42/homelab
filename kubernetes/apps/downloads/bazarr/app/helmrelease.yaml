@@ -13,7 +13,6 @@ spec:
     controllers:
       bazarr:
         annotations:
-          kubectl.kubernetes.io/default-container: app
           reloader.stakater.com/auto: "true"
         containers:
           app:
@@ -23,9 +22,6 @@ spec:
             env:
               BAZARR__PORT: &port 80
               TZ: ${TIMEZONE}
-            envFrom:
-              - secretRef:
-                  name: bazarr-secret
             probes:
               liveness:
                 enabled: true
@@ -48,7 +44,7 @@ spec:
                 spec:
                   failureThreshold: 30
                   periodSeconds: 10
-            securityContext: &securityContext
+            securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: {drop: ["ALL"]}
@@ -57,21 +53,6 @@ spec:
                 cpu: 10m
               limits:
                 memory: 1Gi
-          subcleaner:
-            image:
-              repository: registry.k8s.io/git-sync/git-sync
-              tag: v4.6.0@sha256:228a26d5f55ac5ae9c51635812570ba0073e0b1e0bd8fc3a653a0523b918c092
-            env:
-              GITSYNC_REPO: https://github.com/KBlixt/subcleaner
-              GITSYNC_REF: master
-              GITSYNC_PERIOD: 24h
-              GITSYNC_ROOT: /subcleaner
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 128Mi
-            securityContext: *securityContext
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -94,29 +75,11 @@ spec:
     persistence:
       config:
         existingClaim: bazarr-config-v1
-      config-cache:
-        type: emptyDir
-        globalMounts:
-          - path: /config/cache
-      config-log:
-        type: emptyDir
-        globalMounts:
-          - path: /config/log
       media:
         type: nfs
         server: ${SECRET_MEDIA_SERVER:-server}
         path: /media
         globalMounts:
           - path: /media
-      scripts:
-        type: configMap
-        name: bazarr-scripts
-        defaultMode: 0775
-        globalMounts:
-          - path: /scripts/subcleaner.sh
-            subPath: subcleaner.sh
-            readOnly: true
-      subcleaner:
-        type: emptyDir
       tmp:
         type: emptyDir
