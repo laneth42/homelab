@@ -3,18 +3,18 @@
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
-  name: jellyseerr-volsync
+  name: seerr-volsync
 spec:
   secretStoreRef:
     kind: ClusterSecretStore
     name: onepassword
   target:
-    name: jellyseerr-volsync
+    name: seerr-volsync
     creationPolicy: Owner
     template:
       engineVersion: v2
       data:
-        RESTIC_REPOSITORY: '{{ .REPOSITORY_TEMPLATE }}/jellyseerr'
+        RESTIC_REPOSITORY: '{{ .REPOSITORY_TEMPLATE }}/seerr'
         RESTIC_PASSWORD: '{{ .RESTIC_PASSWORD }}'
         AWS_ACCESS_KEY_ID: '{{ .AWS_ACCESS_KEY_ID }}'
         AWS_SECRET_ACCESS_KEY: '{{ .AWS_SECRET_ACCESS_KEY }}'
@@ -25,17 +25,17 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: jellyseerr-config-v1
+  name: seerr
   labels:
-    app.kubernetes.io/name: jellyseerr
-    app.kubernetes.io/instance: jellyseerr
-    app.kubernetes.io/part-of: jellyseerr
+    app.kubernetes.io/name: seerr
+    app.kubernetes.io/instance: seerr
+    app.kubernetes.io/part-of: seerr
 spec:
   accessModes: ["ReadWriteOnce"]
   dataSourceRef:
     kind: ReplicationDestination
     apiGroup: volsync.backube
-    name: jellyseerr-bootstrap
+    name: seerr-bootstrap
   resources:
     requests:
       storage: 1Gi # must match the ReplicationDestination `.spec.capacity` below
@@ -45,14 +45,14 @@ spec:
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationDestination
 metadata:
-  name: jellyseerr-bootstrap
+  name: seerr-bootstrap
   annotations:
     kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
 spec:
   trigger:
     manual: restore-once
   restic:
-    repository: jellyseerr-volsync
+    repository: seerr-volsync
     copyMethod: Snapshot
     volumeSnapshotClassName: csi-ceph-blockpool
     cacheStorageClassName: openebs-hostpath
@@ -70,15 +70,15 @@ spec:
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
-  name: jellyseerr
+  name: seerr
 spec:
-  sourcePVC: jellyseerr-config-v1
+  sourcePVC: seerr
   trigger:
     schedule: "0 7 * * *"
   restic:
     copyMethod: Snapshot
     pruneIntervalDays: 10
-    repository: jellyseerr-volsync
+    repository: seerr-volsync
     volumeSnapshotClassName: csi-ceph-blockpool
     cacheCapacity: 8Gi
     cacheStorageClassName: openebs-hostpath
