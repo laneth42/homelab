@@ -5,22 +5,14 @@ kind: HelmRelease
 metadata:
   name: prowlarr
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
-    name: app-template
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
+    name: prowlarr
+  interval: 1h
   values:
     controllers:
       prowlarr:
         annotations:
-          kubectl.kubernetes.io/default-container: app
           reloader.stakater.com/auto: "true"
         labels:
           setGateway: "true"
@@ -40,48 +32,55 @@ spec:
               PROWLARR__UPDATE__BRANCH: develop
               TZ: ${TIMEZONE}
             probes:
-              liveness: &probes
+              liveness:
+                enabled: true
+                spec:
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness:
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
                     path: /ping
                     port: *port
-                  initialDelaySeconds: 0
                   periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: {drop: ["ALL"]}
             resources:
               requests:
-                cpu: 10m
-                memory: 100Mi
+                cpu: 100m
               limits:
                 memory: 500Mi
-        pod:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 2000
-            runAsGroup: 2000
-            fsGroup: 2000
-            fsGroupChangePolicy: OnRootMismatch
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 2000
+        runAsGroup: 2000
+        fsGroup: 2000
+        fsGroupChangePolicy: OnRootMismatch
     service:
       app:
-        controller: prowlarr
         ports:
           http:
             port: *port
     route:
       app:
-        hostnames: ["{{ .Release.Name }}.${SECRET_PUBLIC_DOMAIN}"]
+        hostnames:
+          - "{{ .Release.Name }}.${SECRET_PUBLIC_DOMAIN}"
         parentRefs:
           - name: envoy-internal
             namespace: network
-            sectionName: https
     persistence:
       config:
         existingClaim: prowlarr-config-v1
