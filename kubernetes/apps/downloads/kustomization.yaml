@@ -14,4 +14,3 @@ resources:
   - ./radarr/ks.yaml
   - ./radarr4k/ks.yaml
   - ./sonarr/ks.yaml
-  - ./unpackerr/ks.yaml
