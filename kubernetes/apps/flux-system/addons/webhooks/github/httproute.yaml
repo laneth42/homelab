@@ -3,13 +3,12 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: webhook-receiver-laneth
+  name: github-webhook-laneth
 spec:
   hostnames: ["laneth-webhook.${SECRET_PUBLIC_DOMAIN}"]
   parentRefs:
-    - name: external
-      namespace: kube-system
-      sectionName: https
+    - name: envoy-internal
+      namespace: network
   rules:
     - backendRefs:
         - name: webhook-receiver
