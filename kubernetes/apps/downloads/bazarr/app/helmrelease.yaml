@@ -9,6 +9,7 @@ spec:
     kind: OCIRepository
     name: bazarr
   interval: 1h
+  timeout: 10m
   values:
     controllers:
       bazarr:
@@ -42,7 +43,7 @@ spec:
               startup:
                 enabled: true
                 spec:
-                  failureThreshold: 30
+                  failureThreshold: 60
                   periodSeconds: 10
             securityContext:
               allowPrivilegeEscalation: false

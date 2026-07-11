@@ -22,4 +22,5 @@ spec:
     name: laneth-kubernetes
     namespace: flux-system
   targetNamespace: downloads
+  timeout: 10m
   wait: false
