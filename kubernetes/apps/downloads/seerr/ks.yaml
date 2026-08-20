@@ -6,9 +6,6 @@ metadata:
   name: seerr
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
   interval: 1h
   path: ./kubernetes/apps/downloads/seerr/app
   prune: true
