@@ -55,7 +55,7 @@ spec:
     repository: radarr4k-volsync
     copyMethod: Snapshot
     volumeSnapshotClassName: csi-ceph-blockpool
-    cacheStorageClassName: openebs-hostpath
+    cacheStorageClassName: local-hostpath
     cacheAccessModes: ["ReadWriteOnce"]
     cacheCapacity: 8Gi
     storageClassName: ceph-block
@@ -81,7 +81,7 @@ spec:
     repository: radarr4k-volsync
     volumeSnapshotClassName: csi-ceph-blockpool
     cacheCapacity: 8Gi
-    cacheStorageClassName: openebs-hostpath
+    cacheStorageClassName: local-hostpath
     cacheAccessModes: ["ReadWriteOnce"]
     storageClassName: ceph-block
     accessModes: ["ReadWriteOnce"]
