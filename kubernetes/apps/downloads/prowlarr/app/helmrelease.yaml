@@ -28,6 +28,7 @@ spec:
               PROWLARR__AUTH__REQUIRED: DisabledForLocalAddresses
               PROWLARR__LOG__DBENABLED: "False"
               PROWLARR__LOG__LEVEL: info
+              PROWLARR__SERVER__ALLOWEDHOSTS: "prowlarr.${SECRET_PUBLIC_DOMAIN},prowlarr,prowlarr.downloads,prowlarr.downloads.svc,prowlarr.downloads.svc.cluster.local"
               PROWLARR__SERVER__PORT: &port 80
               PROWLARR__UPDATE__BRANCH: develop
               TZ: ${TIMEZONE}
@@ -45,6 +46,10 @@ spec:
                   httpGet:
                     path: /ping
                     port: *port
+                    # Host filtering rejects the kubelet's default Host of the pod IP.
+                    httpHeaders:
+                      - name: Host
+                        value: localhost
                   periodSeconds: 10
                   timeoutSeconds: 5
                   failureThreshold: 5
